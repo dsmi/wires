@@ -1,0 +1,4 @@
+Method of Moments solver for wire antennas and scatterers.
+==========================================================
+As described by Roger F. Harrington in 'Field Computation by Moment Methods' (1993) chapter 4 'Wire Antennas and Scatterers'.
+Examples include impedance and gain plot of a dipole antenna (dipolez and dipolegain), more to be added soon.
