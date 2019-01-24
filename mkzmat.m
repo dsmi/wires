@@ -9,6 +9,12 @@ function Z = mkzmat(x, y, z, a, freq, mu, eps)
 %    mu, eps - parameters of the medium
 %
 
+% Wavenumber
+k = freq * sqrt(eps * mu);
+
+% Number of segments
+N = length(x)-1;
+
 % Beginnings of the segments
 xb = x(1:end-1);
 yb = y(1:end-1);
@@ -24,24 +30,30 @@ xc = (xb + xe)/2;
 yc = (yb + ye)/2;
 zc = (zb + ze)/2;
 
+% Segment vectors
+lx = xe-xb;
+ly = ye-yb;
+lz = ze-zb;
+
 % Segment lengths
-l = sqrt((xe-xb).^2 + (ye-yb).^2 + (ze-zb).^2);
+l = sqrt(lx.^2 + ly.^2 + lz.^2);
+
+% Observation and source segment vectors
+lxm = repmat(lx.', 1, N);
+lym = repmat(ly.', 1, N);
+lzm = repmat(lz.', 1, N);
+lxn = repmat(lx, N, 1);
+lyn = repmat(ly, N, 1);
+lzn = repmat(lz, N, 1);
 
 % Lenghts of half-segments pairs adjacent to beginning and end
 ll = (l(1:end-1) + l(2:end))/2;
 lb = [ l(1) ll ];
 le = [ ll l(end) ];
 
-k = freq * sqrt(eps * mu);
-
-N = length(x)-1;
-
-% Observation and source lenghts
-lm = repmat(l.', 1, N);
+% Source lenghts
 ln = repmat(l, N, 1);
-lmb = repmat(lb.', 1, N); % at the beginning
 lnb = repmat(lb, N, 1);
-lme = repmat(le.', 1, N); % at the end
 lne = repmat(le, N, 1);
 
 % Observation and source centers
@@ -78,4 +90,6 @@ psi_mene = psi(xme, yme, zme, xne, yne, zne, lne, a, k);
 jfm = j*freq*mu;
 jfe = j*freq*eps;
 
-Z = jfm*ln.*lm.*psi_mn + 1./jfe.*(psi_mene - psi_menb - psi_mbne + psi_mbnb);
+lmln = lxm.*lxn + lym.*lyn + lzm.*lzn;
+
+Z = jfm*lmln.*psi_mn + 1./jfe.*(psi_mene - psi_menb - psi_mbne + psi_mbnb);
