@@ -1,5 +1,5 @@
-function g = gain(R0, theta, phi, uth, uph, x, y, z, freq, mu, eps, V, I, S)
-% g = gain(R0, theta, phi, uth, uph, x, y, z, freq, mu, eps, V, I, S)
+function g = gain( R0, theta, phi, uth, uph, rb, re, freq, mu, eps, V, I, S )
+% g = gain( R0, theta, phi, uth, uph, rb, re, freq, mu, eps, V, I, S )
 %
 %  Calcuate antenna gain in the given direction. The gain is defined as ratio of the
 %  power flow from the actual antenna to one from an omnidirectional one.
@@ -8,22 +8,30 @@ function g = gain(R0, theta, phi, uth, uph, x, y, z, freq, mu, eps, V, I, S)
 %                     function computes the gain for only a single polarization of
 %                     the radiated field, you need to sum gains for two orthogonal
 %                     polarization for the full gain)
-%   x, y, z         - wire segment endpoints
+%   rb, re          - wire segment beginnings and ends, n-by-3
 %   freq, mu, eps   - angular frequency and parameters of the medium
 %   V               - antenna exitation voltage
 %   I               - calculated antenna current
 %   S               - subsampling matrix or identity if no subsampling (see mktriss, mkzmat)
 %
 
+% To simplify the notation below
+xb = rb( : , 1 )';
+yb = rb( : , 2 )';
+zb = rb( : , 3 )';
+xe = re( : , 1 )';
+ye = re( : , 2 )';
+ze = re( : , 3 )';
+
 % Segment centers, 1-by-N
-cx = (x(1:end-1) + x(2:end)) * 0.5;
-cy = (y(1:end-1) + y(2:end)) * 0.5;
-cz = (z(1:end-1) + z(2:end)) * 0.5;
+cx = (xb + xe)/2;
+cy = (yb + ye)/2;
+cz = (zb + ze)/2;
 
 % Segment vectors, 1-by-N
-lx = (x(2:end) - x(1:end-1));
-ly = (y(2:end) - y(1:end-1));
-lz = (z(2:end) - z(1:end-1));
+lx = xe - xb;
+ly = ye - yb;
+lz = ze - zb;
 
 % Wavenumber
 k = freq * sqrt(eps * mu);

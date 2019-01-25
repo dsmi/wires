@@ -1,41 +1,39 @@
-function Z = mkzmat(x, y, z, a, freq, mu, eps)
-% Z = mkzmat(x, y, z, a, freq, mu, eps)
+function Z = mkzmat( rb, re, a, freq, mu, eps )
+% Z = mkzmat( rb, re, a, freq, mu, eps )
 %
 %   Populates the moment/impedance matrix for a wire, piecewise constant
 %  expansion and pulse testing. (See mktriss for how to convert to Galerkin)
-%    x, y, z - wire segment endpoints
-%    a       - wire radius
-%    freq    - angular frequency
-%    mu, eps - parameters of the medium
+%    rb, re      - wire segment beginnings and ends, n-by-3
+%    a           - wire radius
+%    freq        - angular frequency
+%    mu, eps     - parameters of the medium
 %
 
 % Wavenumber
 k = freq * sqrt(eps * mu);
 
 % Number of segments
-N = length(x)-1;
+N = size( rb, 1 );
 
-% Beginnings of the segments
-xb = x(1:end-1);
-yb = y(1:end-1);
-zb = z(1:end-1);
+% To simplify the notation below
+xb = rb( : , 1 )';
+yb = rb( : , 2 )';
+zb = rb( : , 3 )';
+xe = re( : , 1 )';
+ye = re( : , 2 )';
+ze = re( : , 3 )';
 
-% Ends of the segments
-xe = x(2:end);
-ye = y(2:end);
-ze = z(2:end);
-
-% Segment centers
+% Segment centers, 1-by-N
 xc = (xb + xe)/2;
 yc = (yb + ye)/2;
 zc = (zb + ze)/2;
 
-% Segment vectors
-lx = xe-xb;
-ly = ye-yb;
-lz = ze-zb;
+% Segment vectors, 1-by-N
+lx = xe - xb;
+ly = ye - yb;
+lz = ze - zb;
 
-% Segment lengths
+% Segment lengths, 1-by-N
 l = sqrt(lx.^2 + ly.^2 + lz.^2);
 
 % Observation and source segment vectors

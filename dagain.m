@@ -9,7 +9,7 @@ L = wavelen*0.5    % length
 a = L/(74.2*2.0)   % radius
 
 % Antenna impedance
-[ Zin V I S Z2 x y z ] = dipolea( freq, L, a );
+[ Zin V I S Z2 rb re ] = dipolea( freq, L, a );
 
 Zin
 
@@ -32,7 +32,7 @@ dt = 2*pi/nt;
 tt = linspace(dt/2, 2*pi - dt/2, nt);
 gn = [];
 for theta = tt
-    g = gain( R0, theta, phi, 1, 0, x, y, z, freq, mu0, eps0, V, I, S );
+    g = gain( R0, theta, phi, 1, 0, rb, re, freq, mu0, eps0, V, I, S );
     gn = [ gn g ];
 end
 
