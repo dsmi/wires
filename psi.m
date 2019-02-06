@@ -20,8 +20,8 @@ dz = zm - zn;
 
 R = sqrt(dx.*dx + dy.*dy + dz.*dz);
 
-% Identify self-term
-selfidx = find(R == 0); 
+% Identify self-terms
+selfidx = find( R < 1.0e-15 );
 
 % To avoid division by zero
 R(selfidx) = a;
