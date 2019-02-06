@@ -8,6 +8,10 @@ function S = mktriss(N, nss)
 % point matching as
 %  Z2 = S'*Z*S
 %
+% Notice that the current implementation assumes that the geometry
+% is just a single wire with a pair of ends and it needs to be modified
+% to handle multiple wire cases and loops.
+%
 % Number of unknowns before (N) and after (N2) subsampling are related as:
 %  N = N2*nss+(nss-1);
 %  N2 = (N-(nss-1))/nss;
