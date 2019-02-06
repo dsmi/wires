@@ -1,5 +1,5 @@
-function Z = mkzmat( rb, re, a, freq, mu, eps )
-% Z = mkzmat( rb, re, a, freq, mu, eps )
+function Z = mkzmat( rb, re, a, freq, mu, eps, fpsi )
+% Z = mkzmat( rb, re, a, freq, mu, eps, fpsi )
 %
 %   Populates the moment/impedance matrix for a wire, piecewise constant
 %  expansion and pulse testing. (See mktriss for how to convert to Galerkin)
@@ -8,6 +8,12 @@ function Z = mkzmat( rb, re, a, freq, mu, eps )
 %    freq        - angular frequency
 %    mu, eps     - parameters of the medium
 %
+
+% Use calczmn if the caller has not provided some other Zmn evaluation fn.
+if ~exist('fpsi')
+    fpsi = @psi;
+end
+
 
 % Wavenumber
 k = freq * sqrt(eps * mu);
@@ -45,9 +51,8 @@ lyn = repmat(ly, N, 1);
 lzn = repmat(lz, N, 1);
 
 % Lenghts of half-segments pairs adjacent to beginning and end
-ll = (l(1:end-1) + l(2:end))/2;
-lb = [ l(1) ll ];
-le = [ ll l(end) ];
+lb = l;
+le = l;
 
 % Source lenghts
 ln = repmat(l, N, 1);
@@ -79,11 +84,11 @@ yne = repmat(ye, N, 1);
 zne = repmat(ze, N, 1);
 
 % Finally the potential integrals
-psi_mn = psi(xm, ym, zm, xn, yn, zn, ln, a, k);
-psi_mbnb = psi(xmb, ymb, zmb, xnb, ynb, znb, lnb, a, k);
-psi_mbne = psi(xmb, ymb, zmb, xne, yne, zne, lne, a, k);
-psi_menb = psi(xme, yme, zme, xnb, ynb, znb, lnb, a, k);
-psi_mene = psi(xme, yme, zme, xne, yne, zne, lne, a, k);
+psi_mn = fpsi(xm, ym, zm, xn, yn, zn, ln, a, k);
+psi_mbnb = fpsi(xmb, ymb, zmb, xnb, ynb, znb, lnb, a, k);
+psi_mbne = fpsi(xmb, ymb, zmb, xne, yne, zne, lne, a, k);
+psi_menb = fpsi(xme, yme, zme, xnb, ynb, znb, lnb, a, k);
+psi_mene = fpsi(xme, yme, zme, xne, yne, zne, lne, a, k);
 
 jfm = j*freq*mu;
 jfe = j*freq*eps;
